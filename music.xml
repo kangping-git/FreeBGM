@@ -1,0 +1,13 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<musics>
+    <music>
+        <title>Hello World</title>
+        <length>00:36</length>
+        <author>Kangping</author>
+        <date>2023/09/20</date>
+        <description>
+            初めてのBGM公開ということで、プログラミングで一番最初にする「Hello World」という名前にしました。時間は短めですが、使用してくれたらうれしいです。
+        </description>
+        <file>HelloWorld.wav</file>
+    </music>
+</musics>

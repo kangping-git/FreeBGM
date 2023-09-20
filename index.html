@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Free BGM By Kangping</title>
+        <style>
+            @keyframes opacity {
+                0% {
+                    opacity: 0;
+                }
+                100% {
+                    opacity: 1;
+                }
+            }
+            html,
+            body {
+                margin: 20px;
+                padding: 0;
+                background-color: rgb(22, 22, 22);
+                color: white;
+                text-align: center;
+                user-select: none;
+                -ms-user-select: none;
+                -moz-user-select: none;
+                -webkit-user-select: none;
+            }
+            .music {
+                opacity: 0;
+                margin-top: 20px;
+                display: inline-block;
+                width: 500px;
+                height: 200px;
+                border: 1px solid gray;
+            }
+            .music.load {
+                opacity: 1;
+                animation: opacity 0.5s;
+            }
+            h2 {
+                margin: 0;
+            }
+            audio {
+                display: inline-block;
+                width: 70%;
+                height: 30px;
+                margin-right: 5px;
+                vertical-align: middle;
+            }
+            a {
+                vertical-align: middle;
+                border-radius: 10px;
+                padding: 2px;
+                color: black;
+                height: 30px;
+                background-color: white;
+                text-decoration: none;
+            }
+            time {
+                font-size: small;
+            }
+            @media screen and (max-width: 1050px) {
+                .music {
+                    width: 100%;
+                    height: fit-content;
+                }
+            }
+        </style>
+        <script>
+            let musicHTMLTemplate = `
+            <div class="music" id="{ID}">
+                <h2>{Title}</h2>
+                <span class="description">{Description}</span><br />
+                <audio src="./BGMs/{File}" controls preload></audio><a href="./BGMs/{File}" download="{File}">download</a><br />
+                <time>Created at {Date}</time>
+            </div>`;
+            window.onload = () => {
+                let id = 0;
+                let queue = [];
+                function create(obj, index) {
+                    let title = obj.querySelector("title").textContent;
+                    let length = obj.querySelector("length").textContent;
+                    let author = obj.querySelector("author").textContent;
+                    let date = obj.querySelector("date").textContent;
+                    let description = obj.querySelector("description").textContent;
+                    let file = obj.querySelector("file").textContent;
+                    document.querySelector("main").innerHTML +=
+                        musicHTMLTemplate
+                            .replace(/{Title}/g, title)
+                            .replace(/{Description}/g, description)
+                            .replace(/{File}/g, file)
+                            .replace(/{Date}/g, date)
+                            .replace(/{ID}/g, id) + (index % 2 == 0 ? "" : "<br>");
+                    queue.push(id);
+                    ++id;
+                }
+                fetch("/music.xml")
+                    .then((res) => res.text())
+                    .then((data) => {
+                        const parser = new DOMParser();
+                        const musics = parser.parseFromString(data, "application/xml");
+                        let html = "";
+                        musics.querySelectorAll("music").forEach((value, index) => {
+                            create(value, index);
+                        });
+                    });
+                setInterval(() => {
+                    if (queue.length > 0) {
+                        let $id = queue.splice(0, 1);
+                        document.getElementById($id).classList.add("load");
+                    }
+                }, 100);
+            };
+        </script>
+    </head>
+    <body>
+        <h1>KangpingによるフリーBGM</h1>
+        <main></main>
+    </body>
+</html>
