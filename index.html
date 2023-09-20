@@ -94,7 +94,7 @@
                     queue.push(id);
                     ++id;
                 }
-                fetch("/music.xml")
+                fetch("./music.xml")
                     .then((res) => res.text())
                     .then((data) => {
                         const parser = new DOMParser();
